@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-    demo_results_01.py
-    Demonstrate the processing of results object returned after inference
+    demo_results_03.py
+    Demonstrate the counting of objects after processing of a video source object returned after inference
     2024-09-03 v0.1 armw Initial DRAFT adapted from Ultralytics documentation
     https://github.com/baqwas/yolov8
     ParkCircus Productions
@@ -22,8 +22,9 @@
     References
         https://yolov8.org/
 """
-import cv2
 import os
+
+import cv2
 from ultralytics import YOLO
 
 """
@@ -52,31 +53,39 @@ def prefix_filenames(filenames, subfolder_name):
 
   return list(map(lambda filename: os.path.join(subfolder_name, filename), filenames))
 
-sub_folder = "./images/"                # prefix for images sub-folder
-#  images = ["CENTERSTAGE.jpg", "RubberDuck.jpg", "boats.jpg", "elephant_men.jpg", "puffins.jpg"]  # images for the object detection
-images = ["lookout.jpg", "temple.jpg"]  # images for the object detection
-images = prefix_filenames(images, sub_folder)  # prepare fully qualified names for images
-
-for image_file in images:               # check if the images do exist in the specified sub-folder
-    if not os.path.exists(image_file):
-        print(f"Unable to access image file {image_file}")
-        exit()                          # let's bail out before YOLOv8 complains
-
+source = "/home/reza/Videos/yolo/yolov8/rpi5/images/lavon1.mp4"
 pretrained = ["yolov8n", "yolov8m", "yolov8l", "yolov8x", "yolov8s"]  # available models
 selection = 4                           # set the index to choose a model for the current run
 model = YOLO(f"{pretrained[selection]}.pt")  # pretrained YOLOv8n model
 
-                                        # Run batched inference on a list of images
-results = model(images, stream=True)    # return a generator of Results objects
-filecount = 0
-for result in results:                  # Process results generator
-    boxes = result.boxes                # Boxes object for bounding box outputs
-    masks = result.masks                # Masks object for segmentation masks outputs
-    keypoints = result.keypoints        # Keypoints object for pose outputs
-    probs = result.probs                # Probs object for classification outputs
-    obb = result.obb                    # Oriented boxes object for OBB outputs
-    result.show()                       # display to screen
-    savefile = f"{os.path.splitext(images[filecount])[0]}_{pretrained[selection]}_{filecount:02d}."
-    result.save(filename=savefile + "jpg")      # save annotated results to disk
-    result.save_txt(filename=savefile + "txt")
-    filecount += 1
+cap = cv2.VideoCapture(source)          # access the video file
+
+while cap.isOpened():                   # loop through the video file
+    success, frame = cap.read()         # frame-by-frame
+    if success:
+        results = model(frame)          # return a generator of Results objects
+        annotated_frame = results[0].plot()  # visualize the results on the frame
+
+        obb = results[0].obb               # oriented bounding boxes
+        if obb is not None:
+            xyxy_boxes = obb.xyxy
+            print(xyxy_boxes.shape)
+            object_count = len(obb)  # count detected objects
+
+            for box in obb:
+                x1, y1, x2, y2 = box
+                cv2.rectangle(annotated_frame,
+                    (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+                cv2.putText(frame,
+                    f"Object Count: {object_count}", (10, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+        cv2.imshow("demo_results_02", annotated_frame)  # display the results
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):  # iteration broken by pressing q on the keyboard
+            break
+    else:
+        break                           # no more frames to process
+
+cap.release()                           # good housekeeping
+cv2.destroyAllWindows()
