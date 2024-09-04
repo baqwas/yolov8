@@ -28,30 +28,43 @@ from ultralytics import YOLO
 """
 Load a model using YOLOv8n which is a smaller and more efficient variant for object detection on ARM platforms
 It offers a balance between model size, inference speed, and accuracy, making it a valuable choice applications where computational resources (e.g. mobile, embedded, SBC, etc.) are constrained.
-The key characteristics are:
-- Smaller model size
-- Faster inference speed
-- Reduced computational resources
-- Reasonable accuracy
-yolov8n         low-power (ARM, SBC, mobile)
+The key characteristics of the models are:
+yolov8n         low-power (ARM, SBC, mobile); smaller size, faster inference, reduced resources, moderate accuracy
 yolov8m         medium-size balancing speed & accuracy
 yolov8l         largest and most accurate, ideal for high-precision tasks
 yolov8x         extra large for the highest accuracy
 yolov8s         smallest and fastest
 yolov8-pose     for human pose estimation (not applicable for current test cases)
 """
+import os
 
-pretrained = ["yolov8n", "yolov8m", "yolov8l", "yolov8x", "yolov8s"]
-selection = 4
-model = YOLO(f"{pretrained[selection]}.pt")  # pretrained YOLOv8n model
-images = ["./images/CENTERSTAGE.jpg", "./images/RubberDuck.jpg"]
+def prefix_filenames(filenames, subfolder_name):
+  """Prefixes the names of all files in a list with a subfolder name.
 
-for image_file in images:
+  Args:
+    filenames: A list of filenames.
+    subfolder_name: The subfolder name to prefix.
+
+  Returns:
+    A list of prefixed filenames.
+  """
+
+  return list(map(lambda filename: os.path.join(subfolder_name, filename), filenames))
+
+sub_folder = "./images/"                # prefix for images sub-folder
+images = ["CENTERSTAGE.jpg", "RubberDuck.jpg", "boats.jpg", "elephant_men.jpg", "puffins.jpg"]  # images for the object detection
+images = prefix_filenames(images, sub_folder)  # prepare fully qualified names for images
+
+for image_file in images:               # check if the images do exist in the specified sub-folder
     if not os.path.exists(image_file):
         print(f"Unable to access image file {image_file}")
-        exit()
+        exit()                          # let's bail out before YOLOv8 complains
 
-# Run batched inference on a list of images
+pretrained = ["yolov8n", "yolov8m", "yolov8l", "yolov8x", "yolov8s"]  # available models
+selection = 4                           # set the index to choose a model for the current run
+model = YOLO(f"{pretrained[selection]}.pt")  # pretrained YOLOv8n model
+
+                                        # Run batched inference on a list of images
 results = model(images, stream=True)    # return a generator of Results objects
 filecount = 0
 for result in results:                  # Process results generator
