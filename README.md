@@ -9,7 +9,7 @@ If you are interested in computer vision processing, you need to join the bandwa
 - OpenCV knowledge
 - Ultralytics solutions
 
-There will be a separate repository with fresh material on OpenCV. My previous attempts in publishing tutorials on OpenCV were feeble. Hopefully, in the coming months, the situation can be improved. But for now, here an introductory journey on YOLOv8 while recognizing that YOLOv10 is now available. Time marches on.
+There will be a separate repository with fresh material on OpenCV. My previous attempts in publishing tutorials on OpenCV were feeble. Hopefully, in the coming months, the situation can be improved. But for now, here is an introductory journey on YOLOv8 while recognizing that YOLOv10 is now available! Time marches on.
 
 ## Basic Coverage
 There are three sections in this repository:
