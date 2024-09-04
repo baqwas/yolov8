@@ -28,5 +28,8 @@ This section demonstrates some of the basic solutions running on:
 - Raspberry Pi
   - Model 5
   - Model 4 (planned)
-- DFRobot UNIHIKER  
+- DFRobot UNIHIKER
+
+# Acknowledgment
+The basic codes in the repository were derived from Ultralytics documentation. The very minor modifications were to enable some _bells & whistles_ for users to broader and general purpose use of the scripts.
 
