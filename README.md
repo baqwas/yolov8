@@ -31,5 +31,5 @@ This section demonstrates some of the basic solutions running on:
 - DFRobot UNIHIKER
 
 # Acknowledgment
-The basic codes in the repository were derived from Ultralytics documentation. The very minor modifications were to enable some _bells & whistles_ for users to broader and general purpose use of the scripts.
+The basic codes in the repository were derived from Ultralytics documentation. The very minor modifications were to enable some _bells & whistles_ for users towards broader and general purpose use of the scripts.
 
