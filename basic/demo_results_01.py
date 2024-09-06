@@ -89,6 +89,26 @@ for result in results:                  # Process results generator
         save_conf: Whether to save the confidence scores along with the detections. Default is True
         save_crop: Whether to save the cropped images of detected objects. Default is False
         crop_dir: The directory where cropped images will be saved if save_crop is True
+    result.save_txt(savefile + "txt", model.names)  # not supported in yolov8
+    
+    # Create a YOLOv8 model    
+model = YOLO(model='yolov5s', device='cpu') 
+
+# Read the image and perform object detection on it
+image_path = "/content/ABC.JPG"
+predictions = model(image_path, save_txt=None)
+https://github.com/ultralytics/ultralytics/issues/2143
+# Save the predicted text file to disk
+with open("/content/ABC.txt", 'w') as file:
+    for prediction in predictions.xyxy[0]:
+        file.write(f"{prediction[0].item()} {prediction[1].item()} {prediction[2].item()} {prediction[3].item()}\n")
+
+with open("predicted_labels.txt", '+w') as file:
+      for idx, prediction in enumerate(predictions[0].boxes.xywhn): # change final attribute to desired box format
+          cls = int(predictions[0].boxes.cls[idx].item())
+          path = predictions[0].path
+          class_name = model.names[cls]
+          # Write line to file in YOLO label format : cls x y w h
+          file.write(f"{path} {class_name} {cls} {prediction[0].item()} {prediction[1].item()} {prediction[2].item()} {prediction[3].item()}\n")
     """
-    # result.save_txt(savefile + "txt", model.names)
     filecount += 1
