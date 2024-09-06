@@ -22,8 +22,6 @@
     References
         https://yolov8.org/
 """
-import cv2
-import os
 from ultralytics import YOLO
 
 """
