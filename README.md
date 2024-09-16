@@ -33,3 +33,5 @@ This section demonstrates some of the basic solutions running on:
 # Acknowledgment
 The basic codes in the repository were derived from Ultralytics documentation. The very minor modifications were to enable some _bells & whistles_ for users towards broader and general purpose use of the scripts.
 
+The end-user scripts in this repository use YOLOv8 for its object detection features. For more details, refer to [Explore YOLOv8](https://yolov8.org/).
+
